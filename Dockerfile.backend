@@ -1,0 +1,8 @@
+FROM openjdk
+VOLUME /tmp
+RUN mkdir /app
+COPY . /app
+WORKDIR /app
+RUN /app/gradlew bootJar
+RUN mv /app/build/libs/*.jar /app/app.jar
+CMD java -Dserver.port=$PORT $JAVA_OPTS -jar /app/app.jar
