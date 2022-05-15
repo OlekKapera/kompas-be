@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 import pl.enactuspw.kompasbe.model.CalculatorForm
-import pl.enactuspw.kompasbe.model.Fuel
+import pl.enactuspw.kompasbe.model.Source
 import pl.enactuspw.kompasbe.service.MainService
 
 @RestController
@@ -15,8 +15,10 @@ class MainController {
     private lateinit var service: MainService
 
     @GetMapping("/")
-    fun calculate(@RequestBody body: CalculatorForm): List<Fuel> {
-        return service.getFuel(body.consideredSource.first())
+    fun calculate(@RequestBody body: CalculatorForm): CalculatedResponse? {
+        return Source.values()
+            .map { source -> service.calculateNewHouse(body.isSingleFamily, body.residentialArea, source) }
+            .minByOrNull { response -> response.KE }
 //    nowe
 //        jednorodzinne 63.6
 //        wileorodzinne 71
